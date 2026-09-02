@@ -130,6 +130,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <option>Penthouse</option>
                   <option>Residencia Moderna</option>
                   <option>Casa Familiar</option>
+                  <option>Apartamento</option>
                 </select>
               </div>
 
@@ -316,7 +317,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
               <h3 className="text-lg font-bold font-poppins text-[#1F2937]">2. Transparencia Absoluta</h3>
               <p className="text-xs text-gray-600 leading-relaxed">
-                Estilo de negocio seguro y confiable respaldado por los fundamentos legales de Greizy González.
+                Estilo de negocio seguro y confiable respaldado por los fundamentos legales acogidos por la leyes de la República Dominicana.
               </p>
             </div>
 
@@ -342,7 +343,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           <div className="space-y-3 z-10 max-w-2xl text-center lg:text-left">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#7A8AA3]">
-              Asesoría Personalizada Greizy & Greizy González
+              Asesoría Personalizada Greizy González
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold font-poppins">
               ¿Listo para dar el siguiente paso hacia tu hogar ideal?

@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { Property, SearchFilters, ViewType } from '../../types';
-import { 
-  Search, 
-  Filter, 
-  Grid, 
-  Map as MapIcon, 
-  Heart, 
-  MapPin, 
-  X, 
+import {
+  Search,
+  Filter,
+  Grid,
+  Map as MapIcon,
+  Heart,
+  MapPin,
+  X,
   SlidersHorizontal,
   MessageSquare
 } from 'lucide-react';
@@ -66,7 +66,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
       // Keyword
       if (filters.keyword.trim()) {
         const kw = filters.keyword.toLowerCase();
-        const matches = 
+        const matches =
           p.title.toLowerCase().includes(kw) ||
           p.city.toLowerCase().includes(kw) ||
           p.neighborhood.toLowerCase().includes(kw) ||
@@ -131,7 +131,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
 
   return (
     <div className="space-y-8 pb-16 animate-fadeIn">
-      
+
       {/* HEADER BANNER */}
       <section className="bg-[#071B33] text-white py-12 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -150,11 +150,10 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
         <div className="flex items-center gap-2 bg-gray-800 p-1 rounded-lg border border-gray-700">
           <button
             onClick={() => setViewMode('grid')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-              viewMode === 'grid'
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${viewMode === 'grid'
                 ? 'bg-[#03459C] text-white shadow-xs'
                 : 'text-gray-300 hover:text-white'
-            }`}
+              }`}
           >
             <Grid className="w-4 h-4" />
             <span>Vista Cuadrícula</span>
@@ -162,11 +161,10 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
 
           <button
             onClick={() => setViewMode('map')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-              viewMode === 'map'
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${viewMode === 'map'
                 ? 'bg-[#03459C] text-white shadow-xs'
                 : 'text-gray-300 hover:text-white'
-            }`}
+              }`}
           >
             <MapIcon className="w-4 h-4" />
             <span>Mapa Interactivo</span>
@@ -176,10 +174,10 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
 
       {/* MAIN CONTAINER (SEARCH BAR + SIDEBAR + GRID/MAP) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Top Quick Search & Sort Bar */}
         <div className="bg-white p-4 rounded-xl border border-[#DBE3EE] shadow-xs mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          
+
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8AA3]" />
             <input
@@ -192,7 +190,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto md:justify-end">
-            
+
             {/* Mobile Filter Drawer Trigger */}
             <button
               onClick={() => setFilterDrawerOpen(true)}
@@ -223,10 +221,10 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
 
         {/* 2-COLUMN LAYOUT: SIDEBAR (DESKTOP) & CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* DESKTOP COLLAPSIBLE FILTER SIDEBAR */}
           <aside className="hidden lg:block lg:col-span-3 bg-white p-6 rounded-xl border border-[#DBE3EE] shadow-xs space-y-6 sticky top-24">
-            
+
             <div className="flex items-center justify-between border-b border-[#DBE3EE] pb-3">
               <h3 className="font-bold font-poppins text-sm text-[#1F2937] flex items-center gap-1.5">
                 <Filter className="w-4 h-4 text-[#03459C]" />
@@ -250,11 +248,10 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
                     <button
                       key={st}
                       onClick={() => setFilters(prev => ({ ...prev, status: st }))}
-                      className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${
-                        filters.status === st
+                      className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${filters.status === st
                           ? 'bg-[#03459C] text-white shadow-2xs'
                           : 'text-gray-600 hover:text-[#03459C]'
-                      }`}
+                        }`}
                     >
                       {label}
                     </button>
@@ -313,16 +310,15 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
             <div>
               <label className="block text-xs font-bold text-[#1F2937] mb-1.5">Habitaciones Mínimas</label>
               <div className="flex gap-1">
-                {['any', 3, 4, 5, 6].map((num) => (
+                {['any', 1, 2, 3, 4].map((num) => (
                   <button
                     key={String(num)}
                     type="button"
                     onClick={() => setFilters(prev => ({ ...prev, bedrooms: num as any }))}
-                    className={`flex-1 py-1.5 text-xs font-semibold rounded-md border transition-colors ${
-                      filters.bedrooms === num
+                    className={`flex-1 py-1.5 text-xs font-semibold rounded-md border transition-colors ${filters.bedrooms === num
                         ? 'border-[#03459C] bg-[#03459C] text-white'
                         : 'border-[#DBE3EE] bg-[#F7FAFC] text-gray-600 hover:border-gray-400'
-                    }`}
+                      }`}
                   >
                     {num === 'any' ? 'Todas' : `${num}+`}
                   </button>
@@ -355,7 +351,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
 
           {/* MAIN PROPERTY AREA (GRID VS INTERACTIVE MAP) */}
           <main className="lg:col-span-9 space-y-6">
-            
+
             {filteredProperties.length === 0 ? (
               <div className="p-12 text-center bg-white rounded-xl border border-[#DBE3EE] space-y-3">
                 <Search className="w-10 h-10 text-[#7A8AA3] mx-auto" />
@@ -378,7 +374,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
                       key={property.id}
                       className="luxury-card group flex flex-col overflow-hidden bg-white rounded-lg border border-[#DBE3EE] hover:shadow-xl transition-all duration-300"
                     >
-                      
+
                       {/* Hero Image */}
                       <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
                         <img
@@ -386,7 +382,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
                           alt={property.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        
+
                         <div className="absolute top-3 left-3 flex gap-1.5">
                           <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-[#03459C] text-white rounded-md shadow-xs">
                             {property.type}
@@ -466,9 +462,8 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
                       <button
                         key={prop.id}
                         onClick={() => setSelectedMapProperty(prop)}
-                        className={`p-2 bg-[#071B33] text-white rounded-lg shadow-2xl border transition-all transform hover:scale-110 flex items-center gap-2 ${
-                          selectedMapProperty?.id === prop.id ? 'border-[#03459C] ring-2 ring-[#03459C]' : 'border-[#7A8AA3]'
-                        }`}
+                        className={`p-2 bg-[#071B33] text-white rounded-lg shadow-2xl border transition-all transform hover:scale-110 flex items-center gap-2 ${selectedMapProperty?.id === prop.id ? 'border-[#03459C] ring-2 ring-[#03459C]' : 'border-[#7A8AA3]'
+                          }`}
                       >
                         <MapPin className="w-4 h-4 text-[#7A8AA3]" />
                         <div className="text-left">
