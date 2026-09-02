@@ -110,7 +110,8 @@ export const PropertyDetailView: React.FC<PropertyDetailViewProps> = ({
             </button>
             <button
               onClick={() => {
-                navigator.clipboard?.writeText(window.location.href);
+                const shareUrl = `${window.location.origin}${window.location.pathname}?property=${property.id}`;
+                navigator.clipboard?.writeText(shareUrl);
                 onShowToast('Enlace copiado al portapapeles', 'info');
               }}
               className="p-2.5 bg-white/90 hover:bg-white text-gray-700 rounded-full shadow-lg transition-colors"
