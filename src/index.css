@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-primary: #F7FAFC;
+    --accent-greige: #7A8AA3;
+    --accent-teal: #03459C;
+    --accent-teal-hover: #022F70;
+    --text-body: #1F2937;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-primary);
+    color: var(--text-body);
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+/* Custom scrollbar for luxury aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7FAFC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #B9C6D8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7A8AA3;
+}
+
+/* Custom animations and utilities */
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Glass & elevation card styles */
+.card-shadow,
+.luxury-card {
+  background: #FFFFFF;
+  border: 1px solid #DBE3EE;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(161, 153, 143, 0.15);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-shadow:hover,
+.luxury-card:hover {
+  box-shadow: 0 12px 30px rgba(43, 87, 96, 0.15);
+  border-color: #7A8AA3;
+}

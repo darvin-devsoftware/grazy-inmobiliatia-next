@@ -1,0 +1,6 @@
+{
+  "name": "QBrokers Real Estate",
+  "description": "High-end luxury property brokerage app with property listings, agent directory, interactive mortgage & valuation calculators, market insights, and client portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
