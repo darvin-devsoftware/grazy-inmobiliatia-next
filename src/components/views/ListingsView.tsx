@@ -151,8 +151,8 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
           <button
             onClick={() => setViewMode('grid')}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${viewMode === 'grid'
-                ? 'bg-[#03459C] text-white shadow-xs'
-                : 'text-gray-300 hover:text-white'
+              ? 'bg-[#03459C] text-white shadow-xs'
+              : 'text-gray-300 hover:text-white'
               }`}
           >
             <Grid className="w-4 h-4" />
@@ -162,8 +162,8 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
           <button
             onClick={() => setViewMode('map')}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${viewMode === 'map'
-                ? 'bg-[#03459C] text-white shadow-xs'
-                : 'text-gray-300 hover:text-white'
+              ? 'bg-[#03459C] text-white shadow-xs'
+              : 'text-gray-300 hover:text-white'
               }`}
           >
             <MapIcon className="w-4 h-4" />
@@ -249,8 +249,8 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
                       key={st}
                       onClick={() => setFilters(prev => ({ ...prev, status: st }))}
                       className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${filters.status === st
-                          ? 'bg-[#03459C] text-white shadow-2xs'
-                          : 'text-gray-600 hover:text-[#03459C]'
+                        ? 'bg-[#03459C] text-white shadow-2xs'
+                        : 'text-gray-600 hover:text-[#03459C]'
                         }`}
                     >
                       {label}
@@ -316,8 +316,8 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
                     type="button"
                     onClick={() => setFilters(prev => ({ ...prev, bedrooms: num as any }))}
                     className={`flex-1 py-1.5 text-xs font-semibold rounded-md border transition-colors ${filters.bedrooms === num
-                        ? 'border-[#03459C] bg-[#03459C] text-white'
-                        : 'border-[#DBE3EE] bg-[#F7FAFC] text-gray-600 hover:border-gray-400'
+                      ? 'border-[#03459C] bg-[#03459C] text-white'
+                      : 'border-[#DBE3EE] bg-[#F7FAFC] text-gray-600 hover:border-gray-400'
                       }`}
                   >
                     {num === 'any' ? 'Todas' : `${num}+`}

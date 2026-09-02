@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { about } from '../../config/site';
 import { Property, Agent, ViewType } from '../../types';
-import { 
-  Bed, 
-  Bath, 
-  Maximize2, 
-  MapPin, 
-  Calendar, 
-  Heart, 
-  Share2, 
-  Check, 
-  ShieldCheck, 
+import {
+  Bed,
+  Bath,
+  Maximize2,
+  MapPin,
+  Calendar,
+  Heart,
+  Share2,
+  Check,
+  ShieldCheck,
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
@@ -59,7 +59,7 @@ export const PropertyDetailView: React.FC<PropertyDetailViewProps> = ({
 
   return (
     <div className="space-y-12 pb-16 animate-fadeIn">
-      
+
       {/* TOP NAVIGATION BACK BAR */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <button
@@ -73,7 +73,7 @@ export const PropertyDetailView: React.FC<PropertyDetailViewProps> = ({
 
       {/* HERO IMAGE GALLERY / SLIDER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-        
+
         <div className="relative aspect-16/9 md:aspect-21/9 rounded-2xl overflow-hidden bg-gray-900 shadow-2xl border border-[#DBE3EE]">
           <img
             src={images[selectedImageIndex]}
@@ -129,9 +129,8 @@ export const PropertyDetailView: React.FC<PropertyDetailViewProps> = ({
               <button
                 key={idx}
                 onClick={() => setSelectedImageIndex(idx)}
-                className={`relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all ${
-                  selectedImageIndex === idx ? 'border-[#03459C] opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
-                }`}
+                className={`relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all ${selectedImageIndex === idx ? 'border-[#03459C] opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
+                  }`}
               >
                 <img src={img} alt="" className="w-full h-full object-cover" />
               </button>
@@ -144,10 +143,10 @@ export const PropertyDetailView: React.FC<PropertyDetailViewProps> = ({
       {/* 2-COLUMN CONTENT: DETAILS (LEFT) & STICKY SIDEBAR (RIGHT) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          
+
           {/* LEFT: SPECS, DESCRIPTION, AMENITIES */}
           <div className="lg:col-span-8 space-y-10">
-            
+
             {/* Title & Header Specs */}
             <div className="space-y-3 border-b border-[#DBE3EE] pb-6">
               <div className="flex flex-wrap items-center gap-2">
@@ -239,10 +238,10 @@ export const PropertyDetailView: React.FC<PropertyDetailViewProps> = ({
 
           {/* RIGHT: STICKY SIDEBAR WITH AGENT CARD & TOUR CTA */}
           <div className="lg:col-span-4 sticky top-24 space-y-6">
-            
+
             {/* STICKY AGENT CONTACT CARD & TOUR CTA */}
             <div className="bg-white p-6 rounded-2xl border border-[#DBE3EE] shadow-xl space-y-6">
-              
+
               <div className="flex items-center gap-4 border-b border-[#DBE3EE] pb-4">
                 <div
                   aria-label={`Perfil de ${agentName}`}

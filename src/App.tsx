@@ -65,10 +65,10 @@ export default function App() {
   // Cargar propiedad desde query parameter si existe
   useEffect(() => {
     if (properties.length === 0) return;
-    
+
     const params = new URLSearchParams(window.location.search);
     const propertyId = params.get('property');
-    
+
     if (propertyId && properties.find(p => p.id === propertyId)) {
       setSelectedPropertyId(propertyId);
       setActiveView('property-detail');
@@ -79,8 +79,8 @@ export default function App() {
   // Con sesión abierta se recargan incluyendo borradores, más los contactos.
   useEffect(() => {
     if (!currentUser) return;
-    api.adminFetchProperties().then(setProperties).catch(() => {});
-    api.adminFetchLeads().then(setLeads).catch(() => {});
+    api.adminFetchProperties().then(setProperties).catch(() => { });
+    api.adminFetchLeads().then(setLeads).catch(() => { });
   }, [currentUser]);
 
   /* ---------------- Favoritos ---------------- */
