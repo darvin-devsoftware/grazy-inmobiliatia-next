@@ -28,12 +28,18 @@ const STATUS_OVERRIDE: Record<string, ListingStatus> = {
 const TYPE_BY_SLUG: Record<string, PropertyType> = {
   casa: 'Casa',
   apartamento: 'Apartamento',
+  finca: 'Finca',
+  terreno: 'Terreno',
   penthouse: 'Penthouse',
   villa: 'Villa',
   solar: 'Solar',
+  'solar-terreno': 'Solar / Terreno',
+  edificio: 'Edificio',
+  nave: 'Nave',
   'local-comercial': 'Local Comercial',
   oficina: 'Oficina',
-  proyecto: 'Proyecto'
+  proyecto: 'Proyecto',
+  'proyecto-en-planos': 'Proyecto en planos'
 };
 
 export function apiToProperty(api: any): Property {
@@ -62,7 +68,7 @@ export function apiToProperty(api: any): Property {
     neighborhood: api.sector || api.location?.name || '',
     price,
     rentPricePerMonth: api.operation === 'alquiler' ? price : undefined,
-    type: TYPE_BY_SLUG[api.type?.slug] || 'Casa',
+    type: api.type?.name || TYPE_BY_SLUG[api.type?.slug] || 'Casa',
     status,
     bedrooms: Number(api.bedrooms ?? 0),
     bathrooms: Number(api.bathrooms ?? 0),
@@ -76,6 +82,7 @@ export function apiToProperty(api: any): Property {
     description: api.description || '',
     amenities: (api.amenities || []).map((a: any) => a.name),
     isFeatured: Boolean(api.isFeatured),
+    isPublished: Boolean(api.isPublished),
     isHotListing: Boolean(api.isFeatured),
     agentId: 'greizy',
     coordinates: api.coords || { lat: 18.4861, lng: -69.9312 },
@@ -110,7 +117,9 @@ export function propertyToApi(
   const mapped = p.status ? STATUS_TO_API[p.status] : undefined;
 
   const typeSlug = p.type ? SLUG_BY_TYPE[p.type] : undefined;
-  const typeId = catalog?.types?.find((t) => t.slug === typeSlug)?.id;
+  const typeId = catalog?.types?.find(
+    (t) => t.name === p.type || t.slug === typeSlug
+  )?.id;
 
   const locationId = catalog?.locations?.find(
     (l) => l.name?.toLowerCase() === String(p.city || '').toLowerCase()
@@ -135,7 +144,6 @@ export function propertyToApi(
     yearBuilt: p.yearBuilt || null,
     sector: p.neighborhood ?? null,
     address: p.address ?? null,
-    isFeatured: p.isFeatured ? 1 : 0,
     legalStatus: p.legalStatus,
     legalNotes: p.legalNotes ?? null,
     tourUrl: p.virtualTourUrl ?? null
@@ -144,6 +152,8 @@ export function propertyToApi(
   if (typeId) body.typeId = typeId;
   if (locationId) body.locationId = locationId;
   if (amenityIds.length) body.amenityIds = amenityIds;
+  if (p.isFeatured !== undefined) body.isFeatured = p.isFeatured ? 1 : 0;
+  if (p.isPublished !== undefined) body.isPublished = p.isPublished ? 1 : 0;
 
   // El API rechaza claves con undefined
   Object.keys(body).forEach((k) => body[k] === undefined && delete body[k]);

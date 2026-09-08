@@ -7,7 +7,8 @@ export type ViewType =
   | 'property-detail'
   | 'admin-dashboard';
 
-export type PropertyType = 'Casa' | 'Apartamento' | 'Penthouse' | 'Villa' | 'Solar' | 'Local Comercial' | 'Oficina' | 'Proyecto';
+/** Los tipos se administran desde el catálogo del API. */
+export type PropertyType = string;
 export type ListingStatus = 'En Venta' | 'En Alquiler' | 'Reservada' | 'Vendida';
 
 export interface Property {
@@ -32,6 +33,8 @@ export interface Property {
   description: string;
   amenities: string[];
   isFeatured?: boolean;
+  /** Indica si el API debe mostrarla en el sitio público. */
+  isPublished?: boolean;
   isHotListing?: boolean;
   agentId: string;
   coordinates: { lat: number; lng: number };
@@ -139,4 +142,3 @@ export interface SystemUser {
   active: boolean;
   createdAt: string;
 }
-

@@ -64,45 +64,42 @@ export const hero = {
 }
 
 export const about = {
-  name: 'Licda. Greizy González',
-  role: 'Abogada, asesora inmobiliaria y CEO de Inversiones Aragua SRL',
+  name: 'Greizy González',
+  role: 'Abogada & CEO de Inversiones Aragua SRL | Alianza con QBrokers Real Estate',
   photo: '/brand/greizy.jpg',
   quote:
-    '«Creer en la energía de los espacios es entender que una propiedad no es solo metros cuadrados: es la cuna de tus metas, tu tranquilidad y tu futuro.»',
+    '«Creer en el poder de la transformación requiere tanto de estrategia como de convicción. El derecho no es solo un conjunto de normas, sino el puente que permite materializar sueños y proteger patrimonios.»',
   paragraphs: [
-    'Más de 15 años de trayectoria legal combinados con la pasión por conectar a las personas con sus lugares de ensueño. Soy egresada de la Universidad Nacional Experimental de los Llanos Centrales Rómulo Gallegos (UNERG), en Venezuela.',
-    'Como abogada y asesora inmobiliaria respaldada por QBrokers Real Estate, mi propósito es blindar tu inversión con transparencia y certeza jurídica, mientras alineamos tu búsqueda con la intención y la prosperidad que mereces.',
-    'Desde Inversiones Aragua SRL acompaño a inversionistas locales e internacionales en la estructuración de sus compras, la revisión de títulos y la constitución de las sociedades que protegen su patrimonio.',
+    'Creer en el poder de la transformación requiere tanto de estrategia como de convicción. Como abogada con más de quince años de trayectoria, entendí muy temprano que el derecho no es solo un conjunto de normas, sino el puente que permite materializar sueños y proteger patrimonios. Desde mi natal Venezuela hasta este hermoso suelo dominicano que hoy abraza mis proyectos, he construido un camino donde la excelencia jurídica y la visión inmobiliaria convergen para ofrecer certezas en cada paso.',
+    'Como CEO de Inversiones Aragua SRL y asesora de inversiones inmobiliarias aliada a Q Brokers Real Estate en Santo Domingo, mi enfoque va más allá de cerrar una negociación. Aporto una perspectiva integral que fusiona el rigor corporativo, civil y notarial con una profunda sensibilidad humana y espiritual. Sé muy bien lo que significa reinventarse, asumir nuevos retos y liderar con propósito; por eso, cada asesoría está impregnada de esa energía positiva y resiliencia que nos define a las mujeres que no solo emprenden, sino que transforman realidades.',
+    'Emprender en mercados dinámicos implica desafiar constantemente los propios límites. Más allá del derecho y los bienes raíces, mi espíritu versátil me ha llevado a comprender la importancia de la sanidad integral y el bienestar en los espacios que habitamos —incluyendo sectores tan exigentes como el control y manejo de plagas urbanas y el mantenimiento operativo—.',
+    'Asumir este reto como mujer empresaria significa romper moldes con elegancia y firmeza. Demuestra que la verdadera autoridad no radica en la rigidez, sino en la capacidad de coordinar con precisión, anticiparse a los problemas con visión estratégica y mantener la armonía en entornos complejos. Cada desafío operativo o corporativo es, en realidad, una oportunidad para elevar los estándares, demostrar resiliencia y sembrar bienestar y orden en cada proyecto que lidero.',
   ],
 }
 
 export const mission = {
   mission:
-    'Guiar a inversionistas y familias en la adquisición de inmuebles de alto valor en República Dominicana y el extranjero, integrando una sólida certeza jurídica con una atención empática, transparente y alineada a sus propósitos de vida.',
+    'Proveer soluciones jurídicas integrales y asesoría inmobiliaria de alto nivel en la República Dominicana, blindando cada inversión con seguridad legal, transparencia y una atención profundamente humana, para que cada cliente alcance su estabilidad y crecimiento patrimonial con absoluta tranquilidad.',
   vision:
-    'Ser la firma de consultoría inmobiliaria y legal referente en la región, reconocida por su excelencia profesional, integridad inquebrantable y por crear conexiones armoniosas y prósperas entre las personas y sus espacios.',
+    'Consolidarnos en Santo Domingo y la región como el referente indiscutible de confianza en el sector legal e inmobiliario, destacando por una gestión innovadora, empática y orientada a los resultados más elevados de nuestros clientes.',
 }
 
 export const values = [
   {
-    title: 'Seguridad y certeza jurídica',
-    text: 'Cada transacción está blindada por el rigor legal: títulos, deslindes, cargas y contratos revisados antes de firmar.',
+    title: 'Integridad',
+    text: 'La brújula inquebrantable de cada actuación profesional.',
   },
   {
-    title: 'Transparencia y ética',
-    text: 'Relaciones basadas en la verdad, la claridad y el respeto mutuo. Conoces cada paso, cada plazo y cada costo.',
+    title: 'Resiliencia y Liderazgo',
+    text: 'La fuerza interior para superar desafíos y abrir caminos con optimismo.',
   },
   {
-    title: 'Prosperidad alineada',
-    text: 'Creemos en negocios donde todas las partes crecen y ganan en sintonía, sin presiones ni letras pequeñas.',
+    title: 'Empatía Consciente',
+    text: 'Escuchar y conectar genuinamente con las necesidades de cada familia o inversor.',
   },
   {
-    title: 'Energía y empatía',
-    text: 'Conectamos con las intenciones profundas de cada cliente para encontrar el lugar que eleve su bienestar.',
-  },
-  {
-    title: 'Excelencia inmobiliaria',
-    text: 'Respaldados por la red y la fuerza de QBrokers Real Estate, con acceso a inventario local e internacional.',
+    title: 'Excelencia',
+    text: 'Rigor técnico y actualización constante al servicio de tus metas.',
   },
 ]
 

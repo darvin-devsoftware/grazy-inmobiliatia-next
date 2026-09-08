@@ -176,7 +176,6 @@ export default function App() {
       const created = await api.createProperty(newProp, catalog);
       setProperties((prev) => [created, ...prev]);
       logActivity(`Publicada nueva propiedad: "${created.title}"`);
-      showToast('Propiedad creada correctamente.', 'success');
       return created;
     } catch (err) {
       showToast(`No se pudo crear: ${(err as Error).message}`, 'info');
@@ -186,10 +185,12 @@ export default function App() {
 
   const handleUpdateProperty = async (updatedProp: Property): Promise<Property | null> => {
     try {
+      const wasPublished = properties.find((property) => property.id === updatedProp.id)?.isPublished;
       const saved = await api.updateProperty(updatedProp.id, updatedProp, catalog);
       setProperties((prev) => prev.map((p) => (p.id === saved.id ? saved : p)));
       logActivity(`Actualizada propiedad: "${saved.title}"`);
-      showToast('Cambios guardados.', 'success');
+      // La primera publicación se confirma con SweetAlert al cerrar el modal.
+      if (wasPublished || !saved.isPublished) showToast('Cambios guardados.', 'success');
       return saved;
     } catch (err) {
       showToast(`No se pudo guardar: ${(err as Error).message}`, 'info');
@@ -242,7 +243,7 @@ export default function App() {
       <div className="min-h-screen bg-[#F7FAFC] text-[#1F2937] font-montserrat antialiased selection:bg-[#03459C] selection:text-white">
         <AdminDashboardView
           properties={properties}
-          catalogAmenities={catalog.amenities}
+          catalog={catalog}
           agents={agents}
           activities={activities}
           currentUser={currentUser}
@@ -280,6 +281,7 @@ export default function App() {
         {activeView === 'home' && (
           <HomeView
             properties={properties}
+            catalogTypes={catalog.types}
             onNavigate={handleNavigate}
             savedIds={savedIds}
             onToggleSave={toggleSaveProperty}
@@ -298,6 +300,9 @@ export default function App() {
         {activeView === 'listings' && (
           <ListingsView
             properties={properties}
+            catalogTypes={catalog.types}
+            catalogAmenities={catalog.amenities}
+            catalogLocations={catalog.locations}
             onNavigate={handleNavigate}
             savedIds={savedIds}
             onToggleSave={toggleSaveProperty}

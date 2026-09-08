@@ -16,6 +16,7 @@ import {
 
 interface HomeViewProps {
   properties: Property[];
+  catalogTypes?: Array<{ id: number; name: string }>;
   onNavigate: (view: ViewType, propertyId?: string) => void;
   savedIds: string[];
   onToggleSave: (id: string) => void;
@@ -24,6 +25,7 @@ interface HomeViewProps {
 
 export const HomeView: React.FC<HomeViewProps> = ({
   properties,
+  catalogTypes = [],
   onNavigate,
   savedIds,
   onToggleSave,
@@ -125,12 +127,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   onChange={(e) => setPropertyType(e.target.value)}
                   className="w-full py-1 text-xs sm:text-sm bg-transparent outline-none text-gray-800 cursor-pointer"
                 >
-                  <option>Todos los Tipos</option>
-                  <option>Villa Frente al Mar</option>
-                  <option>Penthouse</option>
-                  <option>Residencia Moderna</option>
-                  <option>Casa Familiar</option>
-                  <option>Apartamento</option>
+                  {['Todos los Tipos', ...catalogTypes.map((type) => type.name)].map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
                 </select>
               </div>
 

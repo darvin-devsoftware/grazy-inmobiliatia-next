@@ -14,6 +14,9 @@ import {
 
 interface ListingsViewProps {
   properties: Property[];
+  catalogTypes?: Array<{ id: number; name: string }>;
+  catalogAmenities?: Array<{ id: number; name: string }>;
+  catalogLocations?: Array<{ id: number; name: string }>;
   onNavigate: (view: ViewType, propertyId?: string) => void;
   savedIds: string[];
   onToggleSave: (id: string) => void;
@@ -22,6 +25,9 @@ interface ListingsViewProps {
 
 export const ListingsView: React.FC<ListingsViewProps> = ({
   properties,
+  catalogTypes = [],
+  catalogAmenities = [],
+  catalogLocations = [],
   onNavigate,
   savedIds,
   onToggleSave,
@@ -35,29 +41,31 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
   const [filters, setFilters] = useState<SearchFilters>({
     keyword: '',
     status: 'All',
-    propertyType: 'All',
+    propertyType: 'Todos los Tipos',
     minPrice: 0,
     maxPrice: 30000000,
     bedrooms: 'any',
     bathrooms: 'any',
-    neighborhood: 'All',
+    neighborhood: 'Todos',
     amenities: [],
     sortBy: 'featured'
   });
 
   const availableTypes = useMemo(
-    () => Array.from(new Set(properties.map((property) => property.type))).sort(),
-    [properties]
+    () => ['Todos los Tipos', ...catalogTypes.map((type) => type.name)],
+    [catalogTypes]
   );
 
   const availableAmenities = useMemo(
-    () => Array.from(new Set(properties.flatMap((property) => property.amenities))).sort(),
-    [properties]
+    () => catalogAmenities.length > 0 
+      ? catalogAmenities.map(a => a.name).sort()
+      : Array.from(new Set(properties.flatMap((property) => property.amenities))).sort(),
+    [catalogAmenities, properties]
   );
 
   const availableNeighborhoods = useMemo(
-    () => ['Todos', ...Array.from(new Set(properties.map((property) => property.neighborhood).filter(Boolean))).sort()],
-    [properties]
+    () => ['Todos', ...catalogLocations.map((location) => location.name)],
+    [catalogLocations]
   );
 
   // Filter Logic
@@ -79,7 +87,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
       if (filters.status === 'Rent' && p.status !== 'En Alquiler') return false;
 
       // Property Type
-      if (filters.propertyType !== 'All' && p.type !== filters.propertyType) return false;
+      if (filters.propertyType !== 'Todos los Tipos' && p.type !== filters.propertyType) return false;
 
       // Price Range
       if (p.price < filters.minPrice || p.price > filters.maxPrice) return false;
@@ -91,7 +99,7 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
       if (filters.bathrooms !== 'any' && p.bathrooms < Number(filters.bathrooms)) return false;
 
       // Neighborhood
-      if (filters.neighborhood !== 'All' && filters.neighborhood !== 'Todos' && p.neighborhood !== filters.neighborhood) return false;
+      if (filters.neighborhood !== 'Todos' && p.neighborhood !== filters.neighborhood) return false;
 
       if (filters.amenities.length && !filters.amenities.every((amenity) => p.amenities.includes(amenity))) return false;
 
@@ -118,12 +126,12 @@ export const ListingsView: React.FC<ListingsViewProps> = ({
     setFilters({
       keyword: '',
       status: 'All',
-      propertyType: 'All',
+      propertyType: 'Todos los Tipos',
       minPrice: 0,
       maxPrice: 30000000,
       bedrooms: 'any',
       bathrooms: 'any',
-      neighborhood: 'All',
+      neighborhood: 'Todos',
       amenities: [],
       sortBy: 'featured'
     });

@@ -1,5 +1,7 @@
 import * as api from '../../../lib/api';
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 import { Property, Agent, ActivityLog, ViewType, SystemUser, UserRole } from '../../../types';
 import { Logo } from '../../common/Logo';
 import { RichTextEditor } from '../../common/RichTextEditor';
@@ -37,9 +39,16 @@ import {
   Sparkles
 } from 'lucide-react';
 
+interface PropertyCatalog {
+  types?: Array<{ id: number; slug: string; name: string }>;
+  locations?: Array<{ id: number; slug: string; name: string }>;
+  sectors?: Array<{ id: number; slug: string; name: string; locationId: number; locationSlug: string }>;
+  amenities?: Array<{ id: number; name: string }>;
+}
+
 interface AdminDashboardViewProps {
   properties: Property[];
-  catalogAmenities?: Array<{ id: number; name: string }>;
+  catalog?: PropertyCatalog;
   agents: Agent[];
   activities: ActivityLog[];
   currentUser: SystemUser;
@@ -94,7 +103,7 @@ const ProfileInitials: React.FC<{ name: string; className?: string }> = ({ name,
 
 export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   properties,
-  catalogAmenities = [],
+  catalog = {} as PropertyCatalog,
   agents,
   activities,
   currentUser,
@@ -161,16 +170,18 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
 
   // Property Form State
   const [formTitle, setFormTitle] = useState('');
-  const [formPrice, setFormPrice] = useState<number>(350000);
+  // Se guardan como texto mientras se escribe: convertir en cada pulsación
+  // hacía que pegar un número en un campo vacío terminara mostrando un 0.
+  const [formPrice, setFormPrice] = useState('');
   const [formType, setFormType] = useState<Property['type']>('Casa');
   const [formStatus, setFormStatus] = useState<Property['status']>('En Venta');
   const [formCity, setFormCity] = useState('Santo Domingo');
   const [formAddress, setFormAddress] = useState('');
   const [formNeighborhood, setFormNeighborhood] = useState('');
-  const [formBedrooms, setFormBedrooms] = useState(3);
-  const [formBathrooms, setFormBathrooms] = useState(3);
-  const [formParking, setFormParking] = useState(2);
-  const [formSqft, setFormSqft] = useState(2800);
+  const [formBedrooms, setFormBedrooms] = useState('');
+  const [formBathrooms, setFormBathrooms] = useState('');
+  const [formParking, setFormParking] = useState('');
+  const [formSqft, setFormSqft] = useState('');
   const [formAgentId, setFormAgentId] = useState(agents[0]?.id || 'agent-1');
   const [formDescription, setFormDescription] = useState('');
   const [formAmenities, setFormAmenities] = useState<string[]>([]);
@@ -208,10 +219,16 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   const canManageAgents = currentUser.roleName === 'Administrador' || activeRole.permissions.canManageAgents;
   const amenityOptions = Array.from(
     new Set([
-      ...catalogAmenities.map((amenity) => amenity.name),
+      ...(catalog.amenities || []).map((amenity) => amenity.name),
       ...properties.flatMap((property) => property.amenities)
     ])
   ).sort();
+  const locationOptions = catalog.locations || [];
+  const typeOptions = catalog.types || [];
+  const selectedLocation = locationOptions.find((location) => location.name === formCity);
+  const sectorOptions = (catalog.sectors || []).filter(
+    (sector) => sector.locationId === selectedLocation?.id
+  );
 
   /**
    * Selección de fotos. Se pueden elegir todas de una vez.
@@ -260,16 +277,16 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     if (propertyToEdit) {
       setEditingProperty(propertyToEdit);
       setFormTitle(propertyToEdit.title);
-      setFormPrice(propertyToEdit.price);
+      setFormPrice(String(propertyToEdit.price ?? ''));
       setFormType(propertyToEdit.type);
       setFormStatus(propertyToEdit.status);
       setFormCity(propertyToEdit.city);
       setFormAddress(propertyToEdit.address);
       setFormNeighborhood(propertyToEdit.neighborhood);
-      setFormBedrooms(propertyToEdit.bedrooms);
-      setFormBathrooms(propertyToEdit.bathrooms);
-      setFormParking(propertyToEdit.garageSpaces);
-      setFormSqft(propertyToEdit.sqft);
+      setFormBedrooms(String(propertyToEdit.bedrooms ?? ''));
+      setFormBathrooms(String(propertyToEdit.bathrooms ?? ''));
+      setFormParking(String(propertyToEdit.garageSpaces ?? ''));
+      setFormSqft(String(propertyToEdit.sqft ?? ''));
       setFormAgentId(propertyToEdit.agentId);
       setFormDescription(propertyToEdit.description);
       setFormAmenities(propertyToEdit.amenities);
@@ -285,16 +302,16 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     } else {
       setEditingProperty(null);
       setFormTitle('');
-      setFormPrice(0);
-      setFormType('Casa');
+      setFormPrice('');
+      setFormType(typeOptions.find((type) => type.name === 'Casa')?.name || typeOptions[0]?.name || 'Casa');
       setFormStatus('En Venta');
       setFormCity('Santo Domingo');
       setFormAddress('');
       setFormNeighborhood('');
-      setFormBedrooms(3);
-      setFormBathrooms(2);
-      setFormParking(0);
-      setFormSqft(0);
+      setFormBedrooms('');
+      setFormBathrooms('');
+      setFormParking('');
+      setFormSqft('');
       setFormAgentId(agents[0]?.id || 'greizy');
       setFormDescription('');
       setFormAmenities([]);
@@ -355,6 +372,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
           heroImage: uploadedImages[0],
           galleryImages: uploadedImages,
           isFeatured: false,
+          // Se publica después de que todas las fotos terminen de subir.
+          // Así nunca queda una ficha pública sin portada si falla la subida.
+          isPublished: false,
           coordinates: { lat: 18.4861, lng: -69.9312 }
         } as Property;
         saved = (await onAddProperty(newProp)) || null;
@@ -366,8 +386,25 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
         await onUploadImages(saved.id, files);
       }
 
+      if (saved && !editingProperty) {
+        saved = (await onUpdateProperty({ ...saved, isPublished: true })) || saved;
+      }
+
       setIsPropertyModalOpen(false);
       setPendingFiles([]);
+      if (!editingProperty) {
+        window.setTimeout(() => {
+          void Swal.fire({
+            icon: 'success',
+            title: '¡Propiedad publicada!',
+            text: 'La propiedad ya está visible en el sitio web.',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#03459C'
+          });
+        }, 0);
+      } else {
+        onShowToast('Cambios guardados.', 'success');
+      }
     } catch (err) {
       onShowToast(`No se pudo guardar: ${(err as Error).message}`, 'info');
     } finally {
@@ -1397,7 +1434,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                     type="number"
                     required
                     value={formPrice}
-                    onChange={(e) => setFormPrice(Number(e.target.value))}
+                    min="0"
+                    inputMode="decimal"
+                    onChange={(e) => setFormPrice(e.target.value)}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
                   />
                 </div>
@@ -1424,14 +1463,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                     onChange={(e) => setFormType(e.target.value as any)}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
                   >
-                    <option value="Casa">Casa</option>
-                    <option value="Apartamento">Apartamento</option>
-                    <option value="Penthouse">Penthouse</option>
-                    <option value="Villa">Villa</option>
-                    <option value="Solar">Solar</option>
-                    <option value="Local Comercial">Local Comercial</option>
-                    <option value="Oficina">Oficina</option>
-                    <option value="Proyecto">Proyecto</option>
+                    {typeOptions.map((type) => (
+                      <option key={type.id} value={type.name}>{type.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
@@ -1450,22 +1484,41 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                  <label className="block font-bold mb-1">Ciudad / Zona</label>
-                  <input
-                    type="text"
+                  <label className="block font-bold mb-1">Ciudad / Zona *</label>
+                  <select
+                    required
                     value={formCity}
-                    onChange={(e) => setFormCity(e.target.value)}
+                    onChange={(e) => {
+                      setFormCity(e.target.value);
+                      setFormNeighborhood('');
+                    }}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
-                  />
+                  >
+                    <option value="" disabled>Selecciona una ciudad o zona</option>
+                    {locationOptions.map((location) => (
+                      <option key={location.id} value={location.name}>{location.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">Sector</label>
-                  <input
-                    type="text"
+                  <label className="block font-bold mb-1">Sector *</label>
+                  <select
+                    required
                     value={formNeighborhood}
                     onChange={(e) => setFormNeighborhood(e.target.value)}
+                    disabled={!selectedLocation || sectorOptions.length === 0}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
-                  />
+                  >
+                    <option value="" disabled>
+                      {selectedLocation ? 'Selecciona un sector' : 'Selecciona primero una ciudad o zona'}
+                    </option>
+                    {formNeighborhood && !sectorOptions.some((sector) => sector.name === formNeighborhood) && (
+                      <option value={formNeighborhood}>{formNeighborhood}</option>
+                    )}
+                    {sectorOptions.map((sector) => (
+                      <option key={sector.id} value={sector.name}>{sector.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block font-bold mb-1">Dirección</label>
@@ -1484,7 +1537,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <input
                     type="number"
                     value={formBedrooms}
-                    onChange={(e) => setFormBedrooms(Number(e.target.value))}
+                    min="0"
+                    inputMode="numeric"
+                    onChange={(e) => setFormBedrooms(e.target.value)}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
                   />
                 </div>
@@ -1493,7 +1548,10 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <input
                     type="number"
                     value={formBathrooms}
-                    onChange={(e) => setFormBathrooms(Number(e.target.value))}
+                    min="0"
+                    step="0.5"
+                    inputMode="decimal"
+                    onChange={(e) => setFormBathrooms(e.target.value)}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
                   />
                 </div>
@@ -1502,7 +1560,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <input
                     type="number"
                     value={formParking}
-                    onChange={(e) => setFormParking(Number(e.target.value))}
+                    min="0"
+                    inputMode="numeric"
+                    onChange={(e) => setFormParking(e.target.value)}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
                   />
                 </div>
@@ -1511,7 +1571,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <input
                     type="number"
                     value={formSqft}
-                    onChange={(e) => setFormSqft(Number(e.target.value))}
+                    min="0"
+                    inputMode="decimal"
+                    onChange={(e) => setFormSqft(e.target.value)}
                     className="w-full p-2.5 bg-[#F7FAFC] border border-[#DBE3EE] rounded-xl"
                   />
                 </div>
