@@ -111,7 +111,13 @@ export async function fetchProperty(slug: string): Promise<Property> {
 
 export async function fetchCatalog() {
   const body = await request('/catalog', { auth: false });
-  return body.data as { types: any[]; locations: any[]; amenities: any[]; countries: string[] };
+  return body.data as {
+    types: any[];
+    locations: any[];
+    sectors: Array<{ id: number; slug: string; name: string; locationId: number; locationSlug: string }>;
+    amenities: any[];
+    countries: string[];
+  };
 }
 
 /** Envía el formulario de contacto. */
