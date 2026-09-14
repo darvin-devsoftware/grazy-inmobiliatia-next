@@ -60,6 +60,7 @@ interface AdminDashboardViewProps {
   onDeleteProperty: (id: string) => void;
   /** Sube todas las fotos de golpe. La primera del array queda como portada. */
   onUploadImages?: (propertyId: string, files: File[]) => Promise<Property>;
+  onReorderImages?: (propertyId: string, imageIds: number[]) => Promise<Property>;
   onShowToast: (msg: string, type?: 'success' | 'info') => void;
 }
 
@@ -114,6 +115,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   onUpdateProperty,
   onDeleteProperty,
   onUploadImages,
+  onReorderImages,
   onShowToast
 }) => {
   // Navigation Tabs State
@@ -193,6 +195,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
    * Ambos arrays se mantienen en el MISMO orden: el índice 0 es la portada.
    */
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedImageIds, setUploadedImageIds] = useState<(number | null)[]>([]);
   const [pendingFiles, setPendingFiles] = useState<(File | null)[]>([]);
   const [savingProperty, setSavingProperty] = useState(false);
 
@@ -243,6 +246,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     const previews = fileList.map((file) => URL.createObjectURL(file));
 
     setUploadedImages((prev) => [...prev, ...previews]);
+    setUploadedImageIds((prev) => [...prev, ...fileList.map(() => null)]);
     setPendingFiles((prev) => [...prev, ...fileList]);
     onShowToast(
       `${fileList.length} foto(s) añadidas. La primera será la portada.`,
@@ -251,24 +255,51 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     e.target.value = '';
   };
 
-  /** Mueve una foto al primer puesto: pasa a ser la portada. */
-  const handleMakeHero = (index: number) => {
+  /** Mueve una foto al primer puesto y persiste la portada cuando ya existe. */
+  const handleMakeHero = async (index: number) => {
     if (index === 0) return;
-    setUploadedImages((prev) => {
-      const copy = [...prev];
-      const [selected] = copy.splice(index, 1);
-      return [selected, ...copy];
-    });
-    setPendingFiles((prev) => {
-      const copy = [...prev];
-      const [selected] = copy.splice(index, 1);
-      return [selected, ...copy];
-    });
-    onShowToast('Esta foto será la portada de la propiedad.', 'info');
+    const reorderedImages = [...uploadedImages];
+    const [selectedImage] = reorderedImages.splice(index, 1);
+    const nextImages = [selectedImage, ...reorderedImages];
+    const reorderedImageIds = [...uploadedImageIds];
+    const [selectedImageId] = reorderedImageIds.splice(index, 1);
+    const nextImageIds = [selectedImageId, ...reorderedImageIds];
+    const reorderedFiles = [...pendingFiles];
+    const [selectedFile] = reorderedFiles.splice(index, 1);
+    const nextFiles = [selectedFile, ...reorderedFiles];
+    const canPersist = Boolean(
+      editingProperty &&
+      onReorderImages &&
+      nextImageIds.length > 0 &&
+      nextImageIds.every((imageId): imageId is number => typeof imageId === 'number')
+    );
+
+    try {
+      if (canPersist) {
+        await onReorderImages(editingProperty.id, nextImageIds);
+      }
+      setUploadedImages(nextImages);
+      setUploadedImageIds(nextImageIds);
+      setPendingFiles(nextFiles);
+      if (canPersist) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Imagen principal actualizada',
+          text: 'La nueva portada ya fue guardada.',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#03459C'
+        });
+      } else {
+        onShowToast('Esta foto será la portada al guardar la propiedad.', 'info');
+      }
+    } catch (err) {
+      onShowToast(`No se pudo actualizar la portada: ${(err as Error).message}`, 'info');
+    }
   };
 
   const handleRemoveImage = (index: number) => {
     setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+    setUploadedImageIds((prev) => prev.filter((_, i) => i !== index));
     setPendingFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -298,6 +329,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
           ? [propertyToEdit.heroImage]
           : [];
       setUploadedImages(existing);
+      setUploadedImageIds(propertyToEdit.galleryImageIds || existing.map(() => null));
       setPendingFiles(existing.map(() => null));
     } else {
       setEditingProperty(null);
@@ -316,6 +348,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
       setFormDescription('');
       setFormAmenities([]);
       setUploadedImages([]);
+      setUploadedImageIds([]);
       setPendingFiles([]);
     }
     setIsPropertyModalOpen(true);
@@ -381,9 +414,22 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
       }
 
       // Solo se envían los archivos nuevos, en el orden elegido
+      const desiredImageIds = [...uploadedImageIds];
+      const existingImageIds = new Set(desiredImageIds.filter((id): id is number => id !== null));
       const files = pendingFiles.filter((f): f is File => f instanceof File);
       if (saved && files.length && onUploadImages) {
-        await onUploadImages(saved.id, files);
+        const uploaded = await onUploadImages(saved.id, files);
+        const newImageIds = (uploaded.galleryImageIds || []).filter((id) => !existingImageIds.has(id));
+        let newIdIndex = 0;
+        const orderedImageIds = desiredImageIds
+          .map((id) => id ?? newImageIds[newIdIndex++])
+          .filter((id): id is number => typeof id === 'number');
+        if (orderedImageIds.length && onReorderImages) {
+          await onReorderImages(saved.id, orderedImageIds);
+        }
+      } else if (saved && desiredImageIds.length && onReorderImages) {
+        const orderedImageIds = desiredImageIds.filter((id): id is number => typeof id === 'number');
+        if (orderedImageIds.length) await onReorderImages(saved.id, orderedImageIds);
       }
 
       if (saved && !editingProperty) {
@@ -392,6 +438,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
 
       setIsPropertyModalOpen(false);
       setPendingFiles([]);
+      setUploadedImageIds([]);
       if (!editingProperty) {
         window.setTimeout(() => {
           void Swal.fire({

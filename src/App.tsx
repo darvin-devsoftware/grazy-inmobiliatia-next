@@ -222,6 +222,12 @@ export default function App() {
     return updated;
   };
 
+  const handleReorderImages = async (propertyId: string, imageIds: number[]) => {
+    const updated = await api.reorderImages(propertyId, imageIds);
+    setProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    return updated;
+  };
+
   const handleCreateLeadFromContact = async (leadData: Omit<Lead, 'id' | 'createdAt'>) => {
     await api.submitLead({
       name: leadData.name,
@@ -254,6 +260,7 @@ export default function App() {
           onUpdateProperty={handleUpdateProperty}
           onDeleteProperty={handleDeleteProperty}
           onUploadImages={handleUploadImages}
+          onReorderImages={handleReorderImages}
           onShowToast={showToast}
         />
         <Toast toasts={toasts} onDismiss={dismissToast} />

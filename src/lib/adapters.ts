@@ -43,7 +43,9 @@ const TYPE_BY_SLUG: Record<string, PropertyType> = {
 };
 
 export function apiToProperty(api: any): Property {
-  const images: string[] = (api.images || []).map((img: any) => absoluteUrl(img.url));
+  const imageRecords = api.images || [];
+  const images: string[] = imageRecords.map((img: any) => absoluteUrl(img.url));
+  const galleryImageIds: number[] = imageRecords.map((img: any) => Number(img.id)).filter(Number.isInteger);
   const cover = absoluteUrl(api.cover?.url) || images[0] || '';
 
   // La primera imagen (índice 0) es siempre la portada; el resto es la galería.
@@ -79,6 +81,7 @@ export function apiToProperty(api: any): Property {
     lotSize: api.areaLand ? `${api.areaLand} m²` : '—',
     heroImage,
     galleryImages,
+    galleryImageIds,
     description: api.description || '',
     amenities: (api.amenities || []).map((a: any) => a.name),
     isFeatured: Boolean(api.isFeatured),

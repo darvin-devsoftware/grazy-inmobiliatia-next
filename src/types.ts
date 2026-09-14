@@ -30,6 +30,8 @@ export interface Property {
   lotSize: string;
   heroImage: string;
   galleryImages: string[];
+  /** IDs del API alineados con galleryImages, para poder reordenar imágenes existentes. */
+  galleryImageIds?: number[];
   description: string;
   amenities: string[];
   isFeatured?: boolean;
