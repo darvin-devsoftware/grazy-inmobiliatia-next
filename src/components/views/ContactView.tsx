@@ -22,7 +22,7 @@ const SPANISH_FAQS = [
   },
   {
     question: "¿Qué tipo de garantías legales ofrece Greizy González?",
-    answer: "Operamos con el respaldo legal y estructural de Greizy González, garantizando contratos transparentes, depósitos en cuentas de pliego (escrow) y acompañamiento en todo el cierre notarial."
+    answer: "Operamos con el respaldo legal que nos ofrecen las normas y leyes de la República Dominicana y nuestra experiencia jurídica."
   },
   {
     question: "¿Puedo invertir desde el extranjero (EE.UU., Europa, etc.)?",
@@ -30,7 +30,7 @@ const SPANISH_FAQS = [
   },
   {
     question: "¿Cómo puedo solicitar una valoración de mi propiedad?",
-    answer: "Puedes enviarnos un mensaje con los datos básicos de tu inmueble o utilizar la sección de Servicios para obtener un estimado analítico inmediato."
+    answer: "Cómo puede solicitar la valoración, nos escribe para conocer los detalles y documentos legales de la propiedad y definir el siguiente paso."
   }
 ];
 
@@ -210,7 +210,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onShowToast }) => {
                     <MessageSquare className="w-4 h-4 fill-white" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold font-poppins text-white">Atención Greizy & Greizy González</h4>
+                    <h4 className="text-xs font-bold font-poppins text-white">Atención by Greizy González</h4>
                     <p className="text-[10px] text-gray-300">Respuesta inmediata por WhatsApp</p>
                   </div>
                 </div>
